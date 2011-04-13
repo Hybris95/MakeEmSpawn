@@ -1,0 +1,7 @@
+name: MakeEmSpawn
+main: com.hybris.bukkit.makeemspawn.MakeEmSpawn
+version: 0.5
+website: 
+author: Hybris95
+description: 
+             MakeEmSpawn allows (ops/permissionned) players to (de)spawn monsters
