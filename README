@@ -1,0 +1,6 @@
+# Compilation libraries configuration
+Import craftbukkit.jar and Permissions.jar into the folder ./jars (create it if necessary)
+
+# Compilation
+Use makeemspawn-compile.bash to compile on Linux
+Use makeemspawn-compile.bat to compile on Windows
