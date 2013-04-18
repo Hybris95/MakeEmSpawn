@@ -1,7 +1,5 @@
 package com.hybris.bukkit.makeemspawn;
 
-import org.bukkit.event.player.PlayerListener;
-import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -9,7 +7,8 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerEvent;
-//import org.bukkit.event.player.PlayerMoveEvent;
+
+import org.bukkit.event.EventHandler;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
@@ -20,13 +19,13 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.World;
 import java.util.List;
 
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 
 import java.util.HashMap;
 
 import java.util.EnumSet;
 
-class MakeEmSpawnPlayerListener extends PlayerListener{
+class MakeEmSpawnPlayerListener {
 	
 	private MakeEmSpawn plugin;
 	private HashMap<String,String> makeemspawners;
@@ -38,6 +37,7 @@ class MakeEmSpawnPlayerListener extends PlayerListener{
 		this.numbers = new HashMap<String,Byte>();
 	}
 	
+    @EventHandler
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event){
 		
 		if(event.isCancelled()){return;}
@@ -146,7 +146,7 @@ class MakeEmSpawnPlayerListener extends PlayerListener{
 		String creatureType = "";
 		mobName = mobName.toLowerCase();
 		if(plugin.hasPermissions(player, mobName)){
-            for(CreatureType type : EnumSet.allOf(CreatureType.class))
+            for(EntityType type : EnumSet.allOf(EntityType.class))
             {
                 if(type.getName().toLowerCase().equals(mobName))
                 {
@@ -204,10 +204,11 @@ class MakeEmSpawnPlayerListener extends PlayerListener{
 		player.sendMessage("chicken|cow|pig|sheep|creeper|skeleton|spider|zombie|squid");
 	}
 	
+    @EventHandler
 	public void onPlayerEggThrow(PlayerEggThrowEvent event){		
 		Player player = event.getPlayer();
 		if(makeemspawners.containsKey(player.getName())){
-			event.setHatchType(CreatureType.valueOf(makeemspawners.get(player.getName()).toUpperCase()));
+			event.setHatchingType(EntityType.valueOf(makeemspawners.get(player.getName())));
 			event.setHatching(true);
 			
 			Byte number = numbers.get(player.getName());
@@ -221,6 +222,7 @@ class MakeEmSpawnPlayerListener extends PlayerListener{
 		}
 	}
 	
+    @EventHandler
 	public void onPlayerDropItem(PlayerDropItemEvent event){
 		if(event.isCancelled()){return;}
 		
@@ -236,6 +238,7 @@ class MakeEmSpawnPlayerListener extends PlayerListener{
 		}
 	}
 	
+    @EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event){	
 		Player player = event.getPlayer();
 		if(makeemspawners.containsKey(player.getName())){
@@ -244,6 +247,7 @@ class MakeEmSpawnPlayerListener extends PlayerListener{
 		}
 	}
 	
+    @EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event){
 		Player player = event.getPlayer();
 		
