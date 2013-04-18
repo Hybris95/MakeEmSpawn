@@ -14,7 +14,6 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.HumanEntity;
@@ -24,6 +23,8 @@ import java.util.List;
 import org.bukkit.entity.CreatureType;
 
 import java.util.HashMap;
+
+import java.util.EnumSet;
 
 class MakeEmSpawnPlayerListener extends PlayerListener{
 	
@@ -142,41 +143,32 @@ class MakeEmSpawnPlayerListener extends PlayerListener{
 	}
 	
 	private String creatureType(String mobName, Player player){
-		String creatureType = mobName.toUpperCase();
+		String creatureType = "";
 		mobName = mobName.toLowerCase();
 		if(plugin.hasPermissions(player, mobName)){
-			if(mobName.equals("chicken")){}
-			else if(mobName.equals("cow")){}
-			else if(mobName.equals("creeper")){}
-			else if(mobName.equals("ghast")){}
-			else if(mobName.equals("giant")){}
-			else if(mobName.equals("pig")){}
-			else if(mobName.equals("pigzombie")){
-				creatureType = "pig_zombie";
-			}
-			else if(mobName.equals("sheep")){}
-			else if(mobName.equals("skeleton")){}
-			else if(mobName.equals("slime")){}
-			else if(mobName.equals("spider")){}
-			else if(mobName.equals("squid")){}
-			else if(mobName.equals("wolf")){}
-			else if(mobName.equals("zombie")){}
-			else if(mobName.equals("monster")){} // TOTEST
-			else{
-				player.sendMessage("Unsupported Creature");
-				creatureType = "";
-			}
+            for(CreatureType type : EnumSet.allOf(CreatureType.class))
+            {
+                if(type.getName().toLowerCase().equals(mobName))
+                {
+                    creatureType = type.getName();
+                    break;
+                }
+            }
+            
+            if(creatureType.equals(""))
+            {
+                player.sendMessage("Unsupported Creature");
+            }
 		}
 		else{
 			player.sendMessage("Unsupported Creature or Unsufficent permissions");
-			creatureType = "";
 		}
 		return creatureType;
 	}
 	
 	private boolean giveEgg(Player player){
 		PlayerInventory inv = player.getInventory();
-		HashMap<Integer,ItemStack> couldntFit = inv.addItem(new CraftItemStack(344, 1)); // 344 = Egg Id
+		HashMap<Integer,ItemStack> couldntFit = inv.addItem(new ItemStack(344, 1)); // 344 = Egg Id
 		if(couldntFit.isEmpty()){
 			return true;
 		}
@@ -187,7 +179,7 @@ class MakeEmSpawnPlayerListener extends PlayerListener{
 	
 	private boolean removeEgg(Player player){
 		PlayerInventory inv = player.getInventory();
-		HashMap<Integer,ItemStack> couldntBeRemoved = inv.removeItem(new CraftItemStack(344, 1));
+		HashMap<Integer,ItemStack> couldntBeRemoved = inv.removeItem(new ItemStack(344, 1));
 		if(couldntBeRemoved.isEmpty()){
 			return true;
 		}
