@@ -1,3 +1,3 @@
 @echo off
-@javac -cp "./class;./jars/craftbukkit.jar;./jars/Permissions.jar" -d "./class" ./src/com/hybris/bukkit/makeemspawn/*.java
+@javac -Xlint:deprecation -cp "./class;./jars/craftbukkit.jar;./jars/Permissions.jar" -d "./class" "./src/com/hybris/bukkit/makeemspawn/MakeEmSpawn.java" "./src/com/hybris/bukkit/makeemspawn/MakeEmSpawnPlayerListener.java"
 @pause
