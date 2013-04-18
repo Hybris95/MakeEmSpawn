@@ -1,3 +1,2 @@
 Update MakeEmSpawn with the current Bukkit version (New Event System)
-Update MakeEmSpawn with Bukkit's Permissions (@see org.bukkit.util.permissions.CommandPermissions, org.bukkit.permissions.Permission)
 

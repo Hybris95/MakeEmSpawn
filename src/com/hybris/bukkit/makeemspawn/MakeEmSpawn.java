@@ -9,10 +9,6 @@ import org.bukkit.event.EventPriority;
 
 import org.bukkit.plugin.Plugin;
 
-// TODO - Implement Bukkit's Permissions system
-import org.bukkit.permissions.Permission;
-import org.bukkit.util.permissions.CommandPermissions;
-
 public class MakeEmSpawn extends JavaPlugin{
 	
 	private MakeEmSpawnPlayerListener sMPL;
@@ -46,10 +42,11 @@ public class MakeEmSpawn extends JavaPlugin{
 	boolean hasPermissions(Player player, String node){
 		boolean toReturn = false;
 		String realNode = "makeemspawn." + node;
-        // TODO - Implement Bukkit's Permissions system
-		//toReturn = this.permissions.has(player, realNode);
-		toReturn = player.isOp();
-		
+        toReturn = player.hasPermission(realNode);
+        if(!toReturn)
+        {
+		    toReturn = player.isOp();
+        }		
 		return toReturn;
 	}
 	
