@@ -45,9 +45,10 @@ class MakeEmSpawnPlayerListener implements Listener {
 		
 		String command = event.getMessage();
 		Player player = event.getPlayer();
-		boolean isMakeEmSpawner = makeemspawners.containsKey(player.getName());
 		
 		if(command.toLowerCase().startsWith("/makeemspawn") || command.toLowerCase().startsWith("/mes")){
+			
+			boolean isMakeEmSpawner = makeemspawners.containsKey(player.getName());
 			
 			String[] split = command.split(" ", 4);
 			
@@ -66,113 +67,131 @@ class MakeEmSpawnPlayerListener implements Listener {
 					break;
 				
 				case 1:// makeemspawn
-					
-					if(split.length < 3){
-						printUsage(player);
-						return;
-					}
-					
-					String possibleNumberOfMobs = "1";
-					byte numberOfMobs = (byte)(-1);
-					if(split.length >= 4){
-						possibleNumberOfMobs = split[3];
-						try{
-							numberOfMobs = Byte.parseByte(possibleNumberOfMobs);
-							if(numberOfMobs < (byte)1){
-								player.sendMessage("[MakeEmSpawn] Couldnt parse that number of entities (defaulted to previous or 1)");
-								numberOfMobs = (byte)(-1);
-							}
-						}
-						catch(NumberFormatException e){
-							player.sendMessage("[MakeEmSpawn] Couldnt parse that number of entities (defaulted to previous or 1)");
-							numberOfMobs = (byte)(-1);
-						}
-					}
-					
-					String mobName = split[2];
-					String creatureType = creatureType(mobName, player);
-					if(creatureType.equals("")){
-						printUsage(player);
-						return;
-					}
-					
-					makeemspawners.put(player.getName(),creatureType);
-					if(isMakeEmSpawner){
-						player.sendMessage("Next egg launched will spawn this mob: " + mobName);
-					}
-					else{
-						if(giveEgg(player)){
-							player.sendMessage("Next egg launched will spawn this mob: " + mobName);
-						}
-						else{
-							player.sendMessage("Get some place for an egg!");
-							makeemspawners.remove(player.getName());
-						}
-					}
-					
-					if(numberOfMobs != (byte)(-1)){
-						player.sendMessage("Next eggs launched will spawn " + numberOfMobs + " at once");
-						numbers.put(player.getName(),numberOfMobs);
-					}
+					spawnCmd(split, player);
 					break;
 				
 				case 2:// unmakeemspawn
-					if(!this.plugin.hasPermissions(player, "spawn")){
-						player.sendMessage("You cannot use this command");
-						return;
-					}
-					
-					if(isMakeEmSpawner){
-						removeEgg(player);
-						makeemspawners.remove(player.getName());
-					}
-					
-					String mobFilter = "";
-					if(split.length >= 3)
-					{
-						mobFilter = split[2];
-					}
-					
-					List<World> worlds = this.plugin.getServer().getWorlds();
-					for(World world : worlds){
-						List<LivingEntity> entities = world.getLivingEntities();
-						for(LivingEntity entity : entities){
-							if(!HumanEntity.class.isAssignableFrom(entity.getClass())){
-								if(!mobFilter.equals("")){
-									if(entity.getType().getName().toLowerCase().equals(mobFilter.toLowerCase()))
-									{
-										entity.setHealth(0);
-									}
-								}
-								else
-								{
-									entity.setHealth(0);
-								}
-							}
-						}
-					}
-					player.sendMessage("You are not makeemspawned (anymore) and the worlds got cleaned from creatures");
+					unspawnCmd(split, player);
 					break;
 				case 3:// list
-					if(!this.plugin.hasPermissions(player, "spawn")){
-						player.sendMessage("You cannot use this command");
-						return;
-					}
-					
-					player.sendMessage("[MakeEmSpawn] Available entities :");
-					String listMsg = "";
-					for(EntityType type : EnumSet.allOf(EntityType.class))
-					{
-						if(type.getName() != null && type.isSpawnable())
-						{
-							listMsg += type.getName() + " ";
-						}
-					}
-					player.sendMessage(listMsg);
+					listCmd(split, player);
 					break;
 			}
 			event.setCancelled(true);
 		}
+	}
+	
+	private void spawnCmd(String[] split, Player player)
+	{
+			boolean isMakeEmSpawner = makeemspawners.containsKey(player.getName());
+		
+			if(split.length < 3){
+				printUsage(player);
+				return;
+			}
+			
+			String possibleNumberOfMobs = "1";
+			byte numberOfMobs = (byte)(-1);
+			if(split.length >= 4){
+				possibleNumberOfMobs = split[3];
+				try{
+					numberOfMobs = Byte.parseByte(possibleNumberOfMobs);
+					if(numberOfMobs < (byte)1){
+						player.sendMessage("[MakeEmSpawn] Couldnt parse that number of entities (defaulted to previous or 1)");
+						numberOfMobs = (byte)(-1);
+					}
+				}
+				catch(NumberFormatException e){
+					player.sendMessage("[MakeEmSpawn] Couldnt parse that number of entities (defaulted to previous or 1)");
+					numberOfMobs = (byte)(-1);
+				}
+			}
+			
+			String mobName = split[2];
+			String creatureType = creatureType(mobName, player);
+			if(creatureType.equals("")){
+				printUsage(player);
+				return;
+			}
+			
+			makeemspawners.put(player.getName(),creatureType);
+			if(isMakeEmSpawner){
+				player.sendMessage("Next egg launched will spawn this mob: " + mobName);
+			}
+			else{
+				if(giveEgg(player)){
+					player.sendMessage("Next egg launched will spawn this mob: " + mobName);
+				}
+				else{
+					player.sendMessage("Get some place for an egg!");
+					makeemspawners.remove(player.getName());
+				}
+			}
+			
+			if(numberOfMobs != (byte)(-1)){
+				player.sendMessage("Next eggs launched will spawn " + numberOfMobs + " at once");
+				numbers.put(player.getName(),numberOfMobs);
+			}
+	}
+	
+	private void unspawnCmd(String[] split, Player player)
+	{
+			boolean isMakeEmSpawner = makeemspawners.containsKey(player.getName());
+		
+			if(!this.plugin.hasPermissions(player, "spawn")){
+				player.sendMessage("You cannot use this command");
+				return;
+			}
+			
+			if(isMakeEmSpawner){
+				removeEgg(player);
+				makeemspawners.remove(player.getName());
+			}
+			
+			String mobFilter = "";
+			if(split.length >= 3)
+			{
+				mobFilter = split[2];
+			}
+			
+			List<World> worlds = this.plugin.getServer().getWorlds();
+			for(World world : worlds){
+				List<LivingEntity> entities = world.getLivingEntities();
+				for(LivingEntity entity : entities){
+					if(!HumanEntity.class.isAssignableFrom(entity.getClass())){
+						if(!mobFilter.equals("")){
+							if(entity.getType().getName().toLowerCase().equals(mobFilter.toLowerCase()))
+							{
+								entity.setHealth(0);
+							}
+						}
+						else
+						{
+							entity.setHealth(0);
+						}
+					}
+				}
+			}
+			player.sendMessage("[MakeEmSpawn] You are not makeemspawned (anymore) and the worlds got cleaned from creatures");
+	}
+	
+	private void listCmd(String[] split, Player player)
+	{
+		if(!this.plugin.hasPermissions(player, "spawn")){
+			player.sendMessage("[MakeEmSpawn] You cannot use this command");
+			return;
+		}
+		
+		player.sendMessage("[MakeEmSpawn] Available entities :");
+		String listMsg = "";
+		for(EntityType type : EnumSet.allOf(EntityType.class))
+		{
+			if(type.getName() != null && type.isSpawnable())
+			{
+				listMsg += type.getName() + " ";
+			}
+		}
+		player.sendMessage(listMsg);
 	}
 	
 	private String creatureType(String mobName, Player player){
