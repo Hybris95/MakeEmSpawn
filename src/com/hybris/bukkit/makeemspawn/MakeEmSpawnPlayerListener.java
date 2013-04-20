@@ -79,13 +79,13 @@ class MakeEmSpawnPlayerListener implements Listener {
 						try{
 							numberOfMobs = Byte.parseByte(possibleNumberOfMobs);
 							if(numberOfMobs < (byte)1){
-								printUsage(player);
-								return;
+								player.sendMessage("[MakeEmSpawn] Couldnt parse that number of entities (defaulted to previous or 1)");
+								numberOfMobs = (byte)(-1);
 							}
 						}
 						catch(NumberFormatException e){
-							printUsage(player);
-							return;
+							player.sendMessage("[MakeEmSpawn] Couldnt parse that number of entities (defaulted to previous or 1)");
+							numberOfMobs = (byte)(-1);
 						}
 					}
 					
