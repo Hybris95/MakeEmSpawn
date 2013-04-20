@@ -127,12 +127,27 @@ class MakeEmSpawnPlayerListener implements Listener {
 						makeemspawners.remove(player.getName());
 					}
 					
+					String mobFilter = "";
+					if(split.length >= 3)
+					{
+						mobFilter = split[2];
+					}
+					
 					List<World> worlds = this.plugin.getServer().getWorlds();
 					for(World world : worlds){
 						List<LivingEntity> entities = world.getLivingEntities();
 						for(LivingEntity entity : entities){
 							if(!HumanEntity.class.isAssignableFrom(entity.getClass())){
-								entity.setHealth(0);
+								if(!mobFilter.equals("")){
+									if(entity.getType().getName().toLowerCase().equals(mobFilter.toLowerCase()))
+									{
+										entity.setHealth(0);
+									}
+								}
+								else
+								{
+									entity.setHealth(0);
+								}
 							}
 						}
 					}
@@ -266,8 +281,6 @@ class MakeEmSpawnPlayerListener implements Listener {
 			if(items.getTypeId() == 344){ // 344 = Egg Id
 				makeemspawners.remove(player.getName());
 				player.sendMessage("You are not a makeemspawner anymore");
-				event.setCancelled(true);
-				removeEgg(player); // TODO Bugs yet (maybe because since its the PlayerDropItemEvent the Item isn't in the inventory just while this event)
 			}
 		}
 	}
