@@ -1,10 +1,10 @@
 name: MakeEmSpawn
 main: com.hybris.bukkit.makeemspawn.MakeEmSpawn
-version: 1.0
+version: 1.0c
 website: 
 author: Hybris95
 description: 
-             MakeEmSpawn allows (ops/permissionned) players to (de)spawn monsters
+    MakeEmSpawn allows (ops/permissionned) players to (de)spawn monsters
 commands:
     makeemspawn:
         aliases:

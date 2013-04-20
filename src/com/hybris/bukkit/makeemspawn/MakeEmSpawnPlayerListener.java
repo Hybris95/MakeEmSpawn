@@ -1,5 +1,6 @@
 package com.hybris.bukkit.makeemspawn;
 
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -25,8 +26,8 @@ import java.util.HashMap;
 
 import java.util.EnumSet;
 
-class MakeEmSpawnPlayerListener {
-	
+class MakeEmSpawnPlayerListener implements Listener {
+    
 	private MakeEmSpawn plugin;
 	private HashMap<String,String> makeemspawners;
 	private HashMap<String,Byte> numbers;
@@ -137,6 +138,23 @@ class MakeEmSpawnPlayerListener {
 					}
 					player.sendMessage("You are not makeemspawned (anymore) and the worlds got cleaned from creatures");
 					break;
+				case 3:// list
+					if(!this.plugin.hasPermissions(player, "spawn")){
+						player.sendMessage("You cannot use this command");
+						return;
+					}
+					
+					player.sendMessage("[MakeEmSpawn] Available entities :");
+					String listMsg = "";
+					for(EntityType type : EnumSet.allOf(EntityType.class))
+					{
+						if(type.getName() != null && type.isSpawnable())
+						{
+							listMsg += type.getName() + " ";
+						}
+					}
+					player.sendMessage(listMsg);
+					break;
 			}
 			event.setCancelled(true);
 		}
@@ -148,11 +166,14 @@ class MakeEmSpawnPlayerListener {
 		if(plugin.hasPermissions(player, mobName)){
             for(EntityType type : EnumSet.allOf(EntityType.class))
             {
-                if(type.getName().toLowerCase().equals(mobName))
-                {
-                    creatureType = type.getName();
-                    break;
-                }
+				if(type.getName() != null)
+				{
+					if(type.getName().toLowerCase().equals(mobName))
+					{
+						creatureType = type.getName();
+						break;
+					}
+				}
             }
             
             if(creatureType.equals(""))
@@ -195,6 +216,9 @@ class MakeEmSpawnPlayerListener {
 		else if(option.startsWith("us") || (option.startsWith("unspawn"))){
 			return 2;
 		}
+		else if(option.startsWith("list") || (option.startsWith("l"))){
+			return 3;
+		}
 		return 0;
 	}
 	
@@ -208,17 +232,27 @@ class MakeEmSpawnPlayerListener {
 	public void onPlayerEggThrow(PlayerEggThrowEvent event){		
 		Player player = event.getPlayer();
 		if(makeemspawners.containsKey(player.getName())){
-			event.setHatchingType(EntityType.valueOf(makeemspawners.get(player.getName())));
-			event.setHatching(true);
+			try{
+				EntityType type = EntityType.fromName(makeemspawners.get(player.getName()).toUpperCase());
+				event.setHatchingType(type);
+				event.setHatching(true);
 			
-			Byte number = numbers.get(player.getName());
-			if(number != null){
-				event.setNumHatches(number);
+				Byte number = numbers.get(player.getName());
+				if(number != null){
+					event.setNumHatches(number);
+				}
+				else{
+					event.setNumHatches((byte)1);
+				}
 			}
-			else{
-				event.setNumHatches((byte)1);
+			catch(IllegalArgumentException e)
+			{
+				player.sendMessage("Could not spawn the given Entity");
 			}
-			makeemspawners.remove(player.getName());
+			finally
+			{
+				makeemspawners.remove(player.getName());
+			}
 		}
 	}
 	
@@ -243,7 +277,6 @@ class MakeEmSpawnPlayerListener {
 		Player player = event.getPlayer();
 		if(makeemspawners.containsKey(player.getName())){
 			giveEgg(player);
-			// TODO Complexify with multiworld support
 		}
 	}
 	
@@ -256,9 +289,5 @@ class MakeEmSpawnPlayerListener {
 			removeEgg(player);
 		}
 	}
-	
-	/*public void onPlayerTeleport(PlayerMoveEvent event){
-		// TODO Complexify with multiworld support
-	}*/
 	
 }
