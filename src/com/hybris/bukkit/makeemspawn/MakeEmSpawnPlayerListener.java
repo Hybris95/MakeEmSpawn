@@ -48,8 +48,6 @@ class MakeEmSpawnPlayerListener implements Listener {
 		
 		if(command.toLowerCase().startsWith("/makeemspawn") || command.toLowerCase().startsWith("/mes")){
 			
-			boolean isMakeEmSpawner = makeemspawners.containsKey(player.getName());
-			
 			String[] split = command.split(" ", 4);
 			
 			if(split.length < 2){
