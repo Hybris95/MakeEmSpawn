@@ -5,3 +5,7 @@ website:
 author: Hybris95
 description: 
              MakeEmSpawn allows (ops/permissionned) players to (de)spawn monsters
+commands:
+    makeemspawn:
+        aliases:
+            mes
