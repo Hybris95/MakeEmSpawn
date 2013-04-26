@@ -28,6 +28,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerEvent;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
@@ -56,7 +57,7 @@ class MakeEmSpawnPlayerListener implements Listener {
 		this.numbers = new HashMap<String,Byte>();
 	}
 	
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event){
 		
 		if(event.isCancelled()){return;}
