@@ -131,6 +131,18 @@ class MakeEmSpawnPlayerListener implements Listener {
 				return;
 			}
 			
+			switch(creatureType.toLowerCase())
+			{
+			    case "leashknot":
+			    case "painting":
+			    case "thrownenderpearl":
+			    case "itemframe":
+			        printUsage(player);
+			        return;
+			    default:
+			        break;
+			}
+			
 			makeemspawners.put(player.getName(),creatureType);
 			if(isMakeEmSpawner){
 				player.sendMessage("Next egg launched will spawn this mob: " + mobName);
@@ -205,7 +217,17 @@ class MakeEmSpawnPlayerListener implements Listener {
 		{
 			if(type.getName() != null && type.isSpawnable())
 			{
-				listMsg += type.getName() + " ";
+    			switch(type.getName().toLowerCase())
+    			{
+    			    case "leashknot":
+    			    case "painting":
+    			    case "thrownenderpearl":
+    			    case "itemframe":
+    			        break;
+    			    default:
+				        listMsg += type.getName() + " ";
+    			        break;
+    			}
 			}
 		}
 		player.sendMessage(listMsg);
